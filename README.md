@@ -117,7 +117,7 @@ assert item_encoded_str == MSG_1_EXAMPLE
 ```python
 from src.builders.iot_ext_item_data_builder import  IoTextItemDataBuilder
 
-EXPECTED_MSG = '''t|3900237526042,d|DEV_NAME_002,m|battery_level=d:12.07,m|open_door=b:0,m|open_window=b:0,m|counter_01=i:1234'''
+EXPECTED_MSG = '''t|3900237526042,d|DEV_NAME_002,m|battery_level=d:12.07,m|open_door=b:1,m|open_window=b:0,m|counter_01=i:1234'''
 
 builder = IoTextItemDataBuilder(3900237526042, 'DEV_NAME_002')
 builder.add_measure('battery_level', 12.07)
