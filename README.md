@@ -83,6 +83,10 @@ IoText protocol in `schema-less version` data row example:
 ```bash
 t|3900237526042,d|device_name_001,m|val_water_001=i:1234,m|val_water_002=i:15,m|bulb_state=b:1,m|connector_state=b:0,m|temp_01=d:34.4,m|temp_02=d:36.4,m|temp_03=d:10.4,m|pwr=d:12.231,m|current=d:1.429,m|current_battery=d:1.548
 ```
+and after de-serialization to Python data structures we can see:
+```bash
+[Item(kind='t', name='3900237526042', metric=None), Item(kind='d', name='device_name_001', metric=None), Item(kind='m', name='val_water_001', metric=MetricDataItem(data_type='i', value=1234)), Item(kind='m', name='val_water_002', metric=MetricDataItem(data_type='i', value=15)), Item(kind='m', name='bulb_state', metric=MetricDataItem(data_type='b', value=True)), Item(kind='m', name='connector_state', metric=MetricDataItem(data_type='b', value=False)), Item(kind='m', name='temp_01', metric=MetricDataItem(data_type='d', value=Decimal('34.4'))), Item(kind='m', name='temp_02', metric=MetricDataItem(data_type='d', value=Decimal('36.4'))), Item(kind='m', name='temp_03', metric=MetricDataItem(data_type='d', value=Decimal('10.4'))), Item(kind='m', name='pwr', metric=MetricDataItem(data_type='d', value=Decimal('12.231'))), Item(kind='m', name='current', metric=MetricDataItem(data_type='d', value=Decimal('1.429'))), Item(kind='m', name='current_battery', metric=MetricDataItem(data_type='d', value=Decimal('1.548')))]
+```
 
 #### Preparing message
 You need two required informations:
@@ -91,12 +95,53 @@ You need two required informations:
 - all data metrics are optional, so it means, that you can use IoText protocol like ping - or health check - as well (we have dedicated `h` item type for helth check, too).
 
 
+## How to use this library?
+
+### Use class IoTextCodec for decode and encode data messages 
+```python
+
+from src.codecs.iot_ext_codec import IoTextCodec
+
+MSG_1_EXAMPLE = '''t|3900237526042,d|device_name_001,m|val_water_001=i:1234,m|val_water_002=i:15,m|bulb_state=b:1,m|connector_state=b:0,m|temp_01=d:34.4,m|temp_02=d:36.4,m|temp_03=d:10.4,m|pwr=d:12.231,m|current=d:1.429,m|current_battery=d:1.548'''
+
+item = IoTextCodec.decode(MSG_1_EXAMPLE)
+print('decoded_msg:', item)
+
+item_encoded_str = IoTextCodec.encode(item)
+print('encoded_msg   :', item_encoded_str)
+
+assert item_encoded_str == MSG_1_EXAMPLE
+```
+
+### Use class IoTextItemDataBuilder to build message with simple builder
+```python
+from src.builders.iot_ext_item_data_builder import  IoTextItemDataBuilder
+
+EXPECTED_MSG = '''t|3900237526042,d|DEV_NAME_002,m|battery_level=d:12.07,m|open_door=b:0,m|open_window=b:0,m|counter_01=i:1234'''
+
+builder = IoTextItemDataBuilder(3900237526042, 'DEV_NAME_002')
+builder.add_measure('battery_level', 12.07)
+builder.add_measure('open_door', True)
+builder.add_measure('open_window', False)
+builder.add_measure('counter_01', 1234)
+
+built_msg = str(builder)
+
+print("built_msg: ", built_msg)
+
+assert EXPECTED_MSG == built_msg
+```
+
 ## TODO
- - [ ] - add validator for special chars
- - [ ] - add unit tests
- - [ ] - add fuzzing tests
- - [ ] - add limits/max. sizes for device name and metrics names
- - [ ] - add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
- - [ ] - add schema versioning, no need to repeat metrics names in all message (one schema in particular version can solve names by indexes in data protocol). More optimal version of protocol.
- - [ ] - add definition and examples of delta data sending (it's possibe in schema-less version as well, but maybe it will be good to have implementaion for that required in IoT systems typical optimisation scenario)
- - [ ] - examples, how encapsulate `IoText data protocol` on top od `MQTT IoT protocol`
+ - [ ] FIX bug in add_measure(...) for BOOL type values!?
+ - [ ] add validator for special chars
+ - [ ] update unit tests
+ - [ ] add fuzzing tests (discovery limits in values/metrics sizes and check performance issues on SBC devices like RaspberryPi and ESP32)
+ - [ ] add limits/max. sizes for device name and metrics names
+ - [ ] add CRC16 from MODBUS protocol for serial communication checksum and any terminals usage
+ - [ ] add CI/CD pipeline on github based on Github Actions
+ - [ ] add setup.py file and publish package for PIP + release on github
+ - [ ] add schema versioning, no need to repeat metrics names in all message (one schema in particular version can solve names by indexes in data protocol). More optimal version of protocol.
+ - [ ] add definition and examples of delta data sending (it's possibe in schema-less version as well, but maybe it will be good to have implementaion for that required in IoT systems typical optimisation scenario)
+ - [ ] examples, how encapsulate `IoText data protocol` on top od `MQTT IoT protocol`
+ 
