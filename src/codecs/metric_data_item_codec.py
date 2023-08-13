@@ -7,7 +7,7 @@ from src.types.metric_data_item import MetricDataItem, MetricValueType
 class MetricDataItemCodec:
     @staticmethod
     def decode(
-            data_type_and_value: str, data_type_and_value_char: str = ":"
+        data_type_and_value: str, data_type_and_value_char: str = ":"
     ) -> MetricDataItem:
         data_type, value = data_type_and_value.split(data_type_and_value_char)
         if data_type == MetricDataTypes.INTEGER.value:
