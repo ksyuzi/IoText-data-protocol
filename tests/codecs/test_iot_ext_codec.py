@@ -74,7 +74,6 @@ MSG_1_EXAMPLE_AS_DATA_STRUCTS = [
 
 
 class IoTextCodecTest(TestCase):
-
     # TODO: verify where is a bug!?
     @skip
     def test_decode(self):
