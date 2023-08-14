@@ -10,9 +10,3 @@ class ItemTypes(str, Enum):
     METRIC_ITEM = "m"
     HEALTH_CHECK = "h"
 
-
-@dataclass(frozen=True)
-class Item:
-    kind: ItemTypes
-    name: str
-    metric: Optional[MetricDataItem] = None

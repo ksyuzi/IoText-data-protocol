@@ -2,7 +2,8 @@ from decimal import Decimal
 from unittest import TestCase, skip
 
 from src.codecs.iot_ext_codec import IoTextCodec
-from src.types.item_type import Item, ItemTypes, MetricDataItem
+from src.types.item import Item
+from src.types.item_type import ItemTypes, MetricDataItem
 from src.types.metric_data import MetricDataTypes
 
 MSG_1_EXAMPLE = '''t|3900237526042,d|device_name_001,m|val_water_001=i:1234,m|val_water_002=i:15,m|bulb_state=b:1,''' \
@@ -36,7 +37,6 @@ MSG_1_EXAMPLE_AS_DATA_STRUCTS = \
 class IoTextCodecTest(TestCase):
 
 
-    @skip
     def test_decode(self):
         expected = MSG_1_EXAMPLE_AS_DATA_STRUCTS
 
