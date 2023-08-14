@@ -6,17 +6,16 @@ from src.types.metric_data_item import MetricDataItem
 
 
 class MetricDataItemCodecTest(TestCase):
-
     def test_decode(self):
         expected = MetricDataItem(MetricDataTypes.INTEGER, 1234)
-        msg = 'i:1234'
+        msg = "i:1234"
 
         result = MetricDataItemCodec.decode(msg)
 
         self.assertEqual(expected, result)
 
     def test_encode(self):
-        expected = 'd:100.09'
+        expected = "d:100.09"
         mdi = MetricDataItem(MetricDataTypes.DECIMAL, 100.09)
 
         result = MetricDataItemCodec.encode(mdi)
@@ -45,14 +44,14 @@ class MetricDataItemCodecTest(TestCase):
         self.assertEqual(expected, result)
 
     def test_from_value_type_bool_true(self):
-        expected = MetricDataItem(MetricDataTypes.BOOL, '1')
+        expected = MetricDataItem(MetricDataTypes.BOOL, "1")
 
         result = MetricDataItemCodec.from_value(True)
 
         self.assertEqual(expected, result)
 
     def test_from_value_type_bool_true(self):
-        expected = MetricDataItem(MetricDataTypes.BOOL, '0')
+        expected = MetricDataItem(MetricDataTypes.BOOL, "0")
 
         result = MetricDataItemCodec.from_value(False)
 
